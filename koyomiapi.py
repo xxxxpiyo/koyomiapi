@@ -9,7 +9,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route("/koyomi/24sekki", methods=["GET"])
+@app.route("/24sekki", methods=["GET"])
 def sekki24():
     return 'aho'
 
