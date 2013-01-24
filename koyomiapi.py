@@ -5,8 +5,14 @@
 __author__="hasegawa"
 __date__ ="$2013/01/23 17:43:08$"
 
-from flask import Flask, request, g
+from flask import Flask, request, g, json
 import datetime
+import sys
+
+
+#sys.path.append("/Users/hasegawa/NetBeansProjects/koyomi/koyomi")
+
+from sekki24 import get24SekkiDay
 
 app = Flask(__name__)
 
@@ -37,9 +43,14 @@ def sekki24():
     if year < 1901 or year > 2099:
         return invalidParameter()
     
-    # no
+    # index
     try:
         for i in request.args["index"].split(","):
+            
+            # 1 - 24まで
+            if int(i) < 1 or 24 < int(i):
+                return invalidParameter()
+            
             index.append(int(i))
     
     except ValueError:
@@ -47,9 +58,24 @@ def sekki24():
     except:
         pass
     
-    return "date:{0}/{1}/{2} {3}:{4} year={5}".format(g.date.year, g.date.month,g.date.day, g.date.hour, g.date.minute,str(year))
+    # indexがある場合、重複を除外
+    if len(index) > 0:
+        index = list(set(index))
+    
+    #return "dyear={0} index={1}".format(str(year),str(index))
+    #return str(get24SekkiJSON(year,index)).decode("utf-8")
+    s = u'あほ'
+    return json.dumps(get24SekkiJSON(year,index))
         
 
+def get24SekkiJSON(year, index):
+    result = get24SekkiDay(year,index) if len(index) > 0 else get24SekkiDay(year)
+    result2 = []
+    for i in result:
+        i["name"] = i["name"].encode("utf-8")
+        result2.append(i)
+    return result
+    
 
 
 def invalidParameter(code=400):
