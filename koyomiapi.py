@@ -20,13 +20,13 @@ app = Flask(__name__)
 def getToday():
     g.date = datetime.datetime.today()
 
-@app.route("/24sekki", methods=["GET"])
 @app.route("/24sekki.json", methods=["GET"])
 def sekki24_json():
     resp = make_response(json.dumps(get_sekki24(request)))
     resp.headers['Content-type'] = "application/json; charset: UTF-8"
     return resp
 
+@app.route("/24sekki", methods=["GET"])
 @app.route("/24sekki.xml", methods=["GET"])
 def sekki24_xml():
     resp = make_response(dict2xml.dict2xml(get_sekki24(request)))
