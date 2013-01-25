@@ -5,10 +5,10 @@
 __author__="hasegawa"
 __date__ ="$2013/01/23 17:43:08$"
 
-from flask import Flask, request, g, json
+from flask import Flask, request, g, json, make_response
 import datetime
 import sys
-
+import dict2xml
 
 #sys.path.append("/Users/hasegawa/NetBeansProjects/koyomi/koyomi")
 
@@ -21,7 +21,19 @@ def getToday():
     g.date = datetime.datetime.today()
 
 @app.route("/24sekki", methods=["GET"])
-def sekki24():
+@app.route("/24sekki.json", methods=["GET"])
+def sekki24_json():
+    resp = make_response(json.dumps(get_sekki24(request)))
+    resp.headers['Content-type'] = "application/json; charset: UTF-8"
+    return resp
+
+@app.route("/24sekki.xml", methods=["GET"])
+def sekki24_xml():
+    resp = make_response(dict2xml.dict2xml(get_sekki24(request)))
+    resp.headers['Content-type'] = "text/xml; charset: UTF-8"
+    return resp
+
+def get_sekki24(request):
     
     year = g.date.year
     index = []
@@ -62,21 +74,7 @@ def sekki24():
     if len(index) > 0:
         index = list(set(index))
     
-    #return "dyear={0} index={1}".format(str(year),str(index))
-    #return str(get24SekkiJSON(year,index)).decode("utf-8")
-    s = u'あほ'
-    return json.dumps(get24SekkiJSON(year,index))
-        
-
-def get24SekkiJSON(year, index):
-    result = get24SekkiDay(year,index) if len(index) > 0 else get24SekkiDay(year)
-    result2 = []
-    for i in result:
-        i["name"] = i["name"].encode("utf-8")
-        result2.append(i)
-    return result
-    
-
+    return get24SekkiDay(year,index) if len(index) > 0 else get24SekkiDay(year)
 
 def invalidParameter(code=400):
     return "Invalid parameter", code
