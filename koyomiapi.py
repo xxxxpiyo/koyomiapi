@@ -26,6 +26,17 @@ def sekki24_json():
     resp.headers['Content-type'] = "application/json; charset: UTF-8"
     return resp
 
+@app.route("/24sekki.jsonp", methods=["GET"])
+def sekki24_jsonp():
+    try:
+        callback=request.args["callback"]
+    except:
+        callback="callback"
+    
+    resp = make_response(callback+"(" + json.dumps(get_sekki24(request)) + ")")
+    resp.headers['Content-type'] = "application/javascript; charset: UTF-8"
+    return resp
+    
 @app.route("/24sekki", methods=["GET"])
 @app.route("/24sekki.xml", methods=["GET"])
 def sekki24_xml():
