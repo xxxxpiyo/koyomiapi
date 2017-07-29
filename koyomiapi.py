@@ -10,8 +10,6 @@ import datetime
 import sys
 import dict2xml
 
-sys.path.append("/Users/hasegawa/git/koyomi")
-
 from sekki24 import get24SekkiDay
 
 app = Flask(__name__)
