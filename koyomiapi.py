@@ -10,7 +10,7 @@ import datetime
 import sys
 import dict2xml
 
-#sys.path.append("/Users/hasegawa/NetBeansProjects/koyomi/koyomi")
+sys.path.append("/Users/hasegawa/git/koyomi")
 
 from sekki24 import get24SekkiDay
 
@@ -47,6 +47,7 @@ def sekki24_xml():
 def get_sekki24(request):
     
     year = g.date.year
+    month = None
     index = []
     
     #
@@ -61,7 +62,17 @@ def get_sekki24(request):
         return invalidParameter()
     except:
         pass
-    
+
+    # month
+    try:
+        month = int(request.args["month"])
+
+    except ValueError:
+        return invalidParameter()
+
+    except :
+        month = None
+
     # このAPIは1901 - 2099までしか対応していない
     if year < 1901 or year > 2099:
         return invalidParameter()
@@ -85,7 +96,7 @@ def get_sekki24(request):
     if len(index) > 0:
         index = list(set(index))
     
-    return get24SekkiDay(year,index) if len(index) > 0 else get24SekkiDay(year)
+    return get24SekkiDay(year,month,index) if len(index) > 0 else get24SekkiDay(year,month)
 
 def invalidParameter(code=400):
     return "Invalid parameter", code
